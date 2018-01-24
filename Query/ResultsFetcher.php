@@ -19,20 +19,20 @@ class ResultsFetcher
      * @param array $searchFields
      * @return \Doctrine\ORM\Query
      */
-    public function getResults(Request $request, QueryBuilder $qb, array $searchFields)
+    public function getResults(Request $request, QueryBuilder $qb, array $searchFields, $searchFromBeginning)
     {
         return $this->getResultsByRequest($request, $qb, $searchFields)->getQuery();
     }
 
-    public function getResultsByRequest(Request $request, QueryBuilder $qb, array $searchFields)
+    public function getResultsByRequest(Request $request, QueryBuilder $qb, array $searchFields, $searchFromBeginning)
     {
         $search = preg_split('/\s+/', trim($request->get(Autocomplete::KEY_SEARCH)));
-        return $this->getResultsByArray($search, $request->get(Autocomplete::KEY_PAGE, 1), $qb, $searchFields);
+        return $this->getResultsByArray($search, $request->get(Autocomplete::KEY_PAGE, 1), $qb, $searchFieldsi, $searchFromBeginning);
     }
 
-    public function getResultsByArray(array $search, $page, QueryBuilder $qb, array $searchFields)
+    public function getResultsByArray(array $search, $page, QueryBuilder $qb, array $searchFields, $searchFromBeginning)
     {
-        $this->appendQuery($qb, $search, $searchFields);
+        $this->appendQuery($qb, $search, $searchFields, $searchFromBeginning);
         $qb->setMaxResults(10);
         $qb->setFirstResult(($page - 1) * 10);
         return $qb;
@@ -57,14 +57,14 @@ class ResultsFetcher
         return new Paginator($query);
     }
 
-    public function appendQuery(QueryBuilder $qb, array $searchWords, array $searchFields)
+    public function appendQuery(QueryBuilder $qb, array $searchWords, array $searchFields, $searchFromBeginning)
     {
         foreach ($searchWords as $key => $searchWord) {
             $expressions = array();
 
             foreach ($searchFields as $key2 => $field) {
                 $expressions[] = $qb->expr()->like($qb->expr()->lower($field), ':query' . $key . $key2);
-                $qb->setParameter('query' . $key . $key2, '%' . strtolower($searchWord) . '%');
+                $qb->setParameter('query' . $key . $key2, ($searchFromBeginning ? '' : '%') . strtolower($searchWord) . '%');
             }
             $qb->andWhere("(" . call_user_func_array(array($qb->expr(), 'orx'), $expressions) . ")");
         }
