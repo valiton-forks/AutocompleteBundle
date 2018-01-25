@@ -17,17 +17,18 @@ class ResultsFetcher
      * @param \Symfony\Component\HttpFoundation\Request $request
      * @param \Doctrine\ORM\QueryBuilder $qb
      * @param array $searchFields
+     * @param $searchFromBeginning
      * @return \Doctrine\ORM\Query
      */
     public function getResults(Request $request, QueryBuilder $qb, array $searchFields, $searchFromBeginning)
     {
-        return $this->getResultsByRequest($request, $qb, $searchFields)->getQuery();
+        return $this->getResultsByRequest($request, $qb, $searchFields, $searchFromBeginning)->getQuery();
     }
 
     public function getResultsByRequest(Request $request, QueryBuilder $qb, array $searchFields, $searchFromBeginning)
     {
         $search = preg_split('/\s+/', trim($request->get(Autocomplete::KEY_SEARCH)));
-        return $this->getResultsByArray($search, $request->get(Autocomplete::KEY_PAGE, 1), $qb, $searchFieldsi, $searchFromBeginning);
+        return $this->getResultsByArray($search, $request->get(Autocomplete::KEY_PAGE, 1), $qb, $searchFields, $searchFromBeginning);
     }
 
     public function getResultsByArray(array $search, $page, QueryBuilder $qb, array $searchFields, $searchFromBeginning)
@@ -43,11 +44,12 @@ class ResultsFetcher
      * @param \Symfony\Component\HttpFoundation\Request $request
      * @param \Doctrine\ORM\QueryBuilder $qb
      * @param array $searchFields
+     * @param $searchFromBeginning
      * @return \Doctrine\ORM\Tools\Pagination\Paginator
      */
-    public function getPaginatedResults(Request $request, QueryBuilder $qb, array $searchFields)
+    public function getPaginatedResults(Request $request, QueryBuilder $qb, array $searchFields, $searchFromBeginning)
     {
-        $query = $this->getResultsByRequest($request, $qb, $searchFields);
+        $query = $this->getResultsByRequest($request, $qb, $searchFields, $searchFromBeginning);
         $pageSize = $request->get(Autocomplete::KEY_LIMIT, 10);
         $page = $request->get(Autocomplete::KEY_PAGE, 1);
 

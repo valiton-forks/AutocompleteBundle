@@ -84,6 +84,7 @@ class AutoCompleteType extends AbstractType
         }
 
         $builder->setAttribute('search-fields', $options['search_fields']);
+        $builder->setAttribute('search-from-beginning', $options['search_from_beginning']);
         $builder->setAttribute('query-builder', $queryBuilder);
         $builder->setAttribute('limit', 15);
         $builder->setAttribute('template', $options['template']);
@@ -138,7 +139,8 @@ class AutoCompleteType extends AbstractType
                 if ($options->has('width')) {
                     return array('style' => 'width: '.$options['width']);
                 }
-            }
+            },
+            'search_from_beginning' => false,
         ));
 
         $resolver->setRequired(array('search_fields', 'class', 'template'));

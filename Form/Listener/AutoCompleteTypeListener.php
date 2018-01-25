@@ -28,7 +28,7 @@ class AutoCompleteTypeListener implements EventSubscriberInterface
     private $type;
 
     /**
-     * @var array 
+     * @var array
      */
     private $options;
 
@@ -57,11 +57,11 @@ class AutoCompleteTypeListener implements EventSubscriberInterface
 
     /**
      * Construct a new AutoCompleteFormListener
-     * 
+     *
      * @param FormType   $type
      * @param Container $container     The service container
      * @param array     $options       An array of options
-     * @param ResultsFetcher ResultsFetcher 
+     * @param ResultsFetcher ResultsFetcher
      * @param LabelBuilder LabelBuilder
      */
     public function __construct(AutoCompleteType $type, Container $container, array $options, ResultsFetcher $results, AutocompleteResponseFormatter $formatter)
@@ -119,7 +119,7 @@ class AutoCompleteTypeListener implements EventSubscriberInterface
         $template = $this->options['template'];
         $extraParams = $this->options['extra_params'];
 
-        $results = $this->resultsFetcher->getPaginatedResults($request, $form->getConfig()->getAttribute('query-builder'), $searchFields);
+        $results = $this->resultsFetcher->getPaginatedResults($request, $form->getConfig()->getAttribute('query-builder'), $searchFields, $form->getConfig()->getAttribute('search-from-beginning'));
         // $results still holds the total amount through (count)
         $ttl = count($results);
         $responseData = array();
