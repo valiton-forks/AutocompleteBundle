@@ -27,7 +27,11 @@ class ResultsFetcher
 
     public function getResultsByRequest(Request $request, QueryBuilder $qb, array $searchFields, $searchFromBeginning)
     {
-        $search = preg_split('/\s+/', trim($request->get(Autocomplete::KEY_SEARCH)));
+        if ($searchFromBeginning) {
+            $search = array(trim($request->get(Autocomplete::KEY_SEARCH)));
+        } else {
+            $search = preg_split('/\s+/', trim($request->get(Autocomplete::KEY_SEARCH)));
+        }
         return $this->getResultsByArray($search, $request->get(Autocomplete::KEY_PAGE, 1), $qb, $searchFields, $searchFromBeginning);
     }
 
