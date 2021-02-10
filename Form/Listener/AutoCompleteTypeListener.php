@@ -69,7 +69,7 @@ class AutoCompleteTypeListener implements EventSubscriberInterface
         $this->type = $type;
         $this->options = $options;
         $this->container = $container;
-        $this->propertyAccessor = PropertyAccess::getPropertyAccessor();
+        $this->propertyAccessor = PropertyAccess::createPropertyAccessor();
         $this->resultsFetcher = $results;
         $this->responseFormatter = $formatter;
     }
@@ -80,7 +80,7 @@ class AutoCompleteTypeListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return array(
-            FormEvents::POST_BIND => array('onPostBind', -100),
+            FormEvents::POST_SUBMIT => array('onPostBind', -100),
         );
     }
 
