@@ -95,7 +95,7 @@ class AutoCompleteTypeListener implements EventSubscriberInterface
     {
         $form = $event->getForm();
 
-        $request = $this->container->get('request');
+        $request = $this->container->get('request_stack')->getMasterRequest();
         if (!$request->request->has(Autocomplete::KEY_PATH)) {
             return;
         }
